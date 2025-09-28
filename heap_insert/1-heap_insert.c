@@ -24,7 +24,8 @@ size_t heap_size(const binary_tree_t *tree)
  *
  * Return: No return
  */
-void heap_to_array(binary_tree_t *tree, binary_tree_t **array, size_t size, size_t i)
+void heap_to_array(binary_tree_t *tree, binary_tree_t **array, size_t size,
+		   size_t i)
 {
 	if (!tree || i >= size)
 		return;
