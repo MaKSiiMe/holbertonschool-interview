@@ -39,7 +39,7 @@ void heap_to_array(binary_tree_t *tree, binary_tree_t **array, size_t size,
  * heapify_up - Heapifies up the tree
  * @new_node: Pointer to the new node
  *
- * Return: Pointer to the new node
+ * Return: Pointer to the final position of the inserted value
  */
 heap_t *heapify_up(heap_t *new_node)
 {
@@ -54,7 +54,7 @@ heap_t *heapify_up(heap_t *new_node)
 		node = node->parent;
 	}
 
-	return (new_node);
+	return (node);
 }
 
 /**
