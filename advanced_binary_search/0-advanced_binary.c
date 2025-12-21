@@ -50,7 +50,7 @@ int recursive_search(int *array, size_t left, size_t right, int value)
 	{
 		if (mid == 0)
 			return (-1);
-		return (recursive_search(array, left, mid - 1, value));
+		return (recursive_search(array, left, mid, value));
 	}
 	else
 	{
@@ -59,7 +59,8 @@ int recursive_search(int *array, size_t left, size_t right, int value)
 }
 
 /**
- * advanced_binary - Recherche la première occurrence d'une valeur dans un tableau trié
+ * advanced_binary - Recherche la première occurrence d'une valeur dans un
+ *                   tableau trié
  * @array: tableau d'entiers trié
  * @size: taille du tableau
  * @value: valeur recherchée
