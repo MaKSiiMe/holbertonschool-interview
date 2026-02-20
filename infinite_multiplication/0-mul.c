@@ -32,33 +32,25 @@ int is_digit_str(const char *s)
 	return (1);
 }
 
-/**
- * mul_print - multiply two positive number-strings and print result
- * @s1: first number string
- * @s2: second number string
- */
-void mul_print(const char *s1, const char *s2)
+static int *multiply_strs(const char *s1, const char *s2, size_t *len_out)
 {
 	size_t n1 = strlen(s1), n2 = strlen(s2);
 	size_t len = n1 + n2;
 	int *res;
-	size_t i, j, start = 0;
+	size_t i, j;
 
 	res = calloc(len, sizeof(int));
 	if (!res)
-		print_error();
+		return (NULL);
 
 	for (i = 0; i < n1; i++)
 	{
 		int a = s1[n1 - 1 - i] - '0';
+
 		for (j = 0; j < n2; j++)
-		{
-			int b = s2[n2 - 1 - j] - '0';
-			res[i + j] += a * b;
-		}
+			res[i + j] += a * (s2[n2 - 1 - j] - '0');
 	}
 
-	/* propagate carries */
 	for (i = 0; i < len; i++)
 	{
 		if (res[i] > 9)
@@ -68,7 +60,14 @@ void mul_print(const char *s1, const char *s2)
 		}
 	}
 
-	/* find most significant non-zero digit */
+	*len_out = len;
+	return (res);
+}
+
+static void print_and_free(int *res, size_t len)
+{
+	size_t i, start = 0;
+
 	for (i = len; i > 0; i--)
 	{
 		if (res[i - 1] != 0)
@@ -78,7 +77,6 @@ void mul_print(const char *s1, const char *s2)
 		}
 	}
 
-	/* if all zeros, print single 0 */
 	if (start == 0 && res[0] == 0)
 	{
 		putchar('0');
@@ -87,11 +85,21 @@ void mul_print(const char *s1, const char *s2)
 		return;
 	}
 
-	/* print digits from most-significant to least */
 	for (i = start + 1; i > 0; i--)
 		putchar(res[i - 1] + '0');
 	putchar('\n');
 	free(res);
+}
+
+void mul_print(const char *s1, const char *s2)
+{
+	size_t len;
+	int *res = multiply_strs(s1, s2, &len);
+
+	if (!res)
+		print_error();
+
+	print_and_free(res, len);
 }
 
 /**
