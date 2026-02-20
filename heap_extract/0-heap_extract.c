@@ -65,6 +65,40 @@ heap_t *heapify_down(heap_t *node)
 }
 
 /**
+ * pop_last_and_get_value - Remove the last level-order node and return its
+ *                          stored value via out_val.
+ * @root: Pointer to the heap root
+ * @size: Number of nodes in the heap
+ * @out_val: Pointer to store the last node's integer value
+ *
+ * Return: 1 on success, 0 on failure
+ */
+static int pop_last_and_get_value(const binary_tree_t *root, size_t size,
+					 int *out_val)
+{
+	binary_tree_t **array;
+	binary_tree_t *last;
+
+	array = malloc(sizeof(binary_tree_t *) * size);
+	if (!array)
+		return (0);
+
+	heap_to_array((binary_tree_t *)root, array, size, 0);
+	last = array[size - 1];
+	*out_val = last->n;
+	if (last->parent)
+	{
+		if (last->parent->left == last)
+			last->parent->left = NULL;
+		else if (last->parent->right == last)
+			last->parent->right = NULL;
+	}
+	free(last);
+	free(array);
+	return (1);
+}
+
+/**
  * heap_extract - Extracts the root node of a Max Binary Heap
  * @root: Double pointer to the root node of the Heap
  *
@@ -73,8 +107,7 @@ heap_t *heapify_down(heap_t *node)
 int heap_extract(heap_t **root)
 {
 	size_t size;
-	binary_tree_t **array;
-	binary_tree_t *last, *parent;
+	int last_val;
 	int ret;
 
 	if (!root || !(*root))
@@ -92,26 +125,12 @@ int heap_extract(heap_t **root)
 		return (ret);
 	}
 
-	array = malloc(sizeof(binary_tree_t *) * size);
-	if (!array)
+	if (!pop_last_and_get_value(*root, size, &last_val))
 		return (0);
-
-	heap_to_array(*root, array, size, 0);
-	last = array[size - 1];
 
 	/* Save root value and replace with last node's value */
 	ret = (*root)->n;
-	(*root)->n = last->n;
-
-	/* Remove last node from tree */
-	parent = last->parent;
-	if (parent->left == last)
-		parent->left = NULL;
-	else if (parent->right == last)
-		parent->right = NULL;
-
-	free(last);
-	free(array);
+	(*root)->n = last_val;
 
 	/* Restore heap property */
 	heapify_down(*root);
