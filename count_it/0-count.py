@@ -9,7 +9,7 @@ import requests
 
 
 def count_words(subreddit, word_list, after=None, counts=None):
-    """Count occurrences of words from word_list in the hot titles of subreddit.
+    """Count occurrences of words from `word_list` in hot post titles.
 
     - subreddit: subreddit name (str)
     - word_list: list of keywords (list of str)
@@ -26,12 +26,14 @@ def count_words(subreddit, word_list, after=None, counts=None):
         # (duplicates should be summed into final result)
         count_multipliers = {}
         for w in word_list:
-            count_multipliers[w.lower()] = count_multipliers.get(w.lower(), 0) + 1
+            lw = w.lower()
+            count_multipliers[lw] = count_multipliers.get(lw, 0) + 1
     else:
         # Recreate multipliers from provided word_list each recursive call
         count_multipliers = {}
         for w in word_list:
-            count_multipliers[w.lower()] = count_multipliers.get(w.lower(), 0) + 1
+            lw = w.lower()
+            count_multipliers[lw] = count_multipliers.get(lw, 0) + 1
 
     # Reddit API request
     url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
@@ -41,7 +43,13 @@ def count_words(subreddit, word_list, after=None, counts=None):
     headers = {"User-Agent": "holberton-script"}
 
     try:
-        r = requests.get(url, headers=headers, params=params, allow_redirects=False, timeout=10)
+        r = requests.get(
+            url,
+            headers=headers,
+            params=params,
+            allow_redirects=False,
+            timeout=10
+        )
     except requests.RequestException:
         return
 
@@ -54,7 +62,8 @@ def count_words(subreddit, word_list, after=None, counts=None):
 
     for child in children:
         title = child.get("data", {}).get("title", "")
-        # Split by whitespace; per spec punctuation attached to words should not match
+        # Split by whitespace.
+        # Per spec, punctuation attached to words should not match
         tokens = title.split()
         for token in tokens:
             t = token.lower()
