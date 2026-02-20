@@ -9,10 +9,10 @@
  */
 size_t heap_size(const binary_tree_t *tree)
 {
-    if (!tree)
-        return (0);
+	if (!tree)
+		return (0);
 
-    return (1 + heap_size(tree->left) + heap_size(tree->right));
+	return (1 + heap_size(tree->left) + heap_size(tree->right));
 }
 
 /**
@@ -25,14 +25,14 @@ size_t heap_size(const binary_tree_t *tree)
  * Return: No return
  */
 void heap_to_array(binary_tree_t *tree, binary_tree_t **array, size_t size,
-           size_t i)
+		   size_t i)
 {
-    if (!tree || i >= size)
-        return;
+	if (!tree || i >= size)
+		return;
 
-    array[i] = tree;
-    heap_to_array(tree->left, array, size, (2 * i) + 1);
-    heap_to_array(tree->right, array, size, (2 * i) + 2);
+	array[i] = tree;
+	heap_to_array(tree->left, array, size, (2 * i) + 1);
+	heap_to_array(tree->right, array, size, (2 * i) + 2);
 }
 
 /**
@@ -43,25 +43,25 @@ void heap_to_array(binary_tree_t *tree, binary_tree_t **array, size_t size,
  */
 heap_t *heapify_down(heap_t *node)
 {
-    heap_t *largest;
-    int tmp;
+	heap_t *largest;
+	int tmp;
 
-    while (node)
-    {
-        largest = node;
-        if (node->left && node->left->n > largest->n)
-            largest = node->left;
-        if (node->right && node->right->n > largest->n)
-            largest = node->right;
-        if (largest == node)
-            break;
-        tmp = node->n;
-        node->n = largest->n;
-        largest->n = tmp;
-        node = largest;
-    }
+	while (node)
+	{
+		largest = node;
+		if (node->left && node->left->n > largest->n)
+			largest = node->left;
+		if (node->right && node->right->n > largest->n)
+			largest = node->right;
+		if (largest == node)
+			break;
+		tmp = node->n;
+		node->n = largest->n;
+		largest->n = tmp;
+		node = largest;
+	}
 
-    return (node);
+	return (node);
 }
 
 /**
@@ -72,49 +72,49 @@ heap_t *heapify_down(heap_t *node)
  */
 int heap_extract(heap_t **root)
 {
-    size_t size;
-    binary_tree_t **array;
-    binary_tree_t *last, *parent;
-    int ret;
+	size_t size;
+	binary_tree_t **array;
+	binary_tree_t *last, *parent;
+	int ret;
 
-    if (!root || !(*root))
-        return (0);
+	if (!root || !(*root))
+		return (0);
 
-    size = heap_size(*root);
-    if (size == 0)
-        return (0);
+	size = heap_size(*root);
+	if (size == 0)
+		return (0);
 
-    if (size == 1)
-    {
-        ret = (*root)->n;
-        free(*root);
-        *root = NULL;
-        return (ret);
-    }
+	if (size == 1)
+	{
+		ret = (*root)->n;
+		free(*root);
+		*root = NULL;
+		return (ret);
+	}
 
-    array = malloc(sizeof(binary_tree_t *) * size);
-    if (!array)
-        return (0);
+	array = malloc(sizeof(binary_tree_t *) * size);
+	if (!array)
+		return (0);
 
-    heap_to_array(*root, array, size, 0);
-    last = array[size - 1];
+	heap_to_array(*root, array, size, 0);
+	last = array[size - 1];
 
-    /* Save root value and replace with last node's value */
-    ret = (*root)->n;
-    (*root)->n = last->n;
+	/* Save root value and replace with last node's value */
+	ret = (*root)->n;
+	(*root)->n = last->n;
 
-    /* Remove last node from tree */
-    parent = last->parent;
-    if (parent->left == last)
-        parent->left = NULL;
-    else if (parent->right == last)
-        parent->right = NULL;
+	/* Remove last node from tree */
+	parent = last->parent;
+	if (parent->left == last)
+		parent->left = NULL;
+	else if (parent->right == last)
+		parent->right = NULL;
 
-    free(last);
-    free(array);
+	free(last);
+	free(array);
 
-    /* Restore heap property */
-    heapify_down(*root);
+	/* Restore heap property */
+	heapify_down(*root);
 
-    return (ret);
+	return (ret);
 }
