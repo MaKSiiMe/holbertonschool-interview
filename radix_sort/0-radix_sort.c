@@ -46,7 +46,7 @@ static void counting_sort(int *array, size_t size, int exp)
 	for (i = size; i > 0; i--)
 	{
 		int idx = (array[i - 1] / exp) % 10;
-		
+
 		output[--count[idx]] = array[i - 1];
 	}
 	/* copy back to original */
@@ -66,6 +66,7 @@ void radix_sort(int *array, size_t size)
 {
 	int max;
 	int exp;
+
 
 	if (!array || size < 2)
 		return;
